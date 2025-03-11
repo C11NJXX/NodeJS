@@ -1,0 +1,1 @@
+join() and resolve() are used to solve the different delimiter between different os
