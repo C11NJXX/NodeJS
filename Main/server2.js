@@ -17,7 +17,7 @@ const users = [
         name: "C"
     }
 ];
-
+/*
 const server = createServer((req, res) => {
     try {
         if (req.method === 'GET') {
@@ -55,6 +55,54 @@ const server = createServer((req, res) => {
         res.end('Server error');
     }
 });
+*/
+
+//add logger middleWare
+const logger = (req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+};
+
+const server = createServer((req, res) => {
+    logger(req, res, () => {
+        try {
+            if (req.method === 'GET') {
+                if (req.url === '/api/users') {
+                    res.writeHead(200, {
+                        'content-type': 'application/json'
+                    });
+                    res.write(JSON.stringify(users));
+                    res.end();
+                } else if (req.url.match(/\/api\/users\/([0-9]+)/)) {
+                    const id = req.url.split('/')[3];
+                    const user = users.find((user) => user.id === parseInt(id));
+                    if (user) {
+                        res.writeHead(200, {
+                            'content-type': 'application/json'
+                        });
+                        res.end(JSON.stringify(user));
+                    } else {
+                        res.writeHead(404, {
+                            'content-type': 'application/json'
+                        });
+                        res.end(JSON.stringify({ "message": "user not found" }));
+                    };
+                } else {
+                    throw new Error('404 not found');
+                }
+            } else {
+                throw new Error('method not allowed');
+            }
+        } catch (error) {
+            console.log(error);
+            res.writeHead(500, {
+                'content-type': 'text/plain'
+            });
+            res.end('Server error');
+        }
+    });
+});
+
 
 server.listen(PORT, () => {
     console.log(`Server is running on PORT:${PORT}`);
