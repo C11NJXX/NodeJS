@@ -142,6 +142,22 @@ const getUserByIdHandle = (req, res) => {
     };
 }
 
+//Route handler for POST /api/users
+const createUserHandler = (req, res) => {
+    let body = '';
+    //Listen for data
+    req.on('data', (chunk) => {
+        body += chunk.toString();
+    });
+    req.on('end', () => {
+        const newUser = JSON.parse(body);
+        users.push(newUser);
+        res.statusCode = 201;
+        res.write(JSON.stringify(newUser));
+        res.end();
+    });
+}
+
 const server = createServer((req, res) => {
     logger(req, res, () => {
         try {
@@ -154,6 +170,10 @@ const server = createServer((req, res) => {
                     getUserByIdHandle(req, res);
                 } else {
                     throw new Error('404 not found');
+                }
+            } else if (req.method === 'POST') {
+                if (req.url === '/api/users') {
+                    createUserHandler(req, res);
                 }
             } else {
                 throw new Error('method not allowed');
