@@ -25,14 +25,22 @@ const PORT = process.env.PORT;
 //     console.log(`Server is running on PORT:${PORT}`);
 // });
 
-const server = http.createServer((req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'text/json'
+// const server = http.createServer((req, res) => {
+//     res.writeHead(200, {
+//         'Content-Type': 'text/json'
+//     });
+//     res.end(JSON.stringify({
+//         id: 3,
+//         name: 'C_11nJxx'
+//     }));
+// });
+
+const server = http.createServer((req,res) => {
+    res.writeHead(200,{
+        'content-type': 'text/plain'
     });
-    res.end(JSON.stringify({
-        id: 3,
-        name: 'C_11nJxx'
-    }));
+    res.end(`Request url: ${req.url}
+Request method: ${req.method}`);
 });
 
 server.listen(PORT, () => {
