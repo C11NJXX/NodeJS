@@ -43,33 +43,69 @@ const PORT = process.env.PORT;
 // Request method: ${req.method}`);
 // });
 
-const server = http.createServer((req, res) => {
+// const server = http.createServer((req, res) => {
+//     try {
+//         //check if GET method
+//         if (req.method === 'GET') {
+//             //simple route
+//             if (req.url === '/') {
+//                 res.writeHead(200, {
+//                     'content-type': 'text/html'
+//                 });
+//                 res.end(`<h1>HomePage</h1>`);
+//             } else if (req.url === '/about') {
+//                 res.writeHead(200, {
+//                     'content-type': 'text/html'
+//                 });
+//                 res.end(`<h1>About</h1>`);
+//             }else {
+//                 res.writeHead(404, {
+//                     'content-type': 'text/html'
+//                 });
+//                 res.end(`<h1>404 Not Found</h1>`);
+//             }
+//         } else {
+//             throw new Error('Server Error');
+//         }
+//     } catch (error) {
+//         res.writeHead(500,{
+//             'content-type':'text/plain'
+//         });
+//         res.end('Server Error');
+//     }
+// });
+
+
+import url from 'url';
+import path from 'path';
+import fs from 'fs/promises';
+
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const server = http.createServer(async (req, res) => {
     try {
         //check if GET method
         if (req.method === 'GET') {
-            //simple route
+            let filePath;
             if (req.url === '/') {
-                res.writeHead(200, {
-                    'content-type': 'text/html'
-                });
-                res.end(`<h1>HomePage</h1>`);
+                filePath = path.join(__dirname, 'public', 'index.html');
             } else if (req.url === '/about') {
-                res.writeHead(200, {
-                    'content-type': 'text/html'
-                });
-                res.end(`<h1>About</h1>`);
-            }else {
-                res.writeHead(404, {
-                    'content-type': 'text/html'
-                });
-                res.end(`<h1>404 Not Found</h1>`);
-            }
+                filePath = path.join(__dirname, 'public', 'about.html');
+            } else {
+                throw new Error('Not Fount');
+            };
+            const data = await fs.readFile(filePath);
+            res.writeHead(200, {
+                'content-type': 'text/html'
+            });
+            res.end(data);
         } else {
-            throw new Error('Server Error');
+            throw new Error('Method Denied');
         }
     } catch (error) {
-        res.writeHead(500,{
-            'content-type':'text/plain'
+        res.writeHead(500, {
+            'content-type': 'text/plain'
         });
         res.end('Server Error');
     }
