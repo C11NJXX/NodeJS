@@ -8,7 +8,8 @@ Hopefully, I'll finish this course before my birthday!
 
 Let's go!
 
-2025.3.10
+2025.3.12
+
 Hi! I finished my Node.js course today.
 
 It covered some basic concepts, core modules, and APIs.
